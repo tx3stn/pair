@@ -1,0 +1,11 @@
+{
+	"coAuthors": {
+		"billy bob": "billy@billybob.org"
+	},
+	"prefixes": [
+		"feat",
+		"fix",
+		"docs"
+	],
+	"ticketPrefix": "JIRA-"
+}

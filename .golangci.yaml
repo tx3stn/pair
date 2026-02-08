@@ -18,6 +18,9 @@ linters:
       - path: 'cmd/app.go'
         linters:
           - gochecknoglobals
+      - path: 'cmd/.*.go'
+        linters:
+          - wrapcheck
       - path: '.*errors\.go'
         linters:
           - cyclop

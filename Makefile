@@ -10,7 +10,7 @@ build:
 .PHONY: lint
 lint:
 	@golangci-lint fmt ${DIR}
-	@golangci-lint run --fix -v ${DIR}
+	@golangci-lint run --fix ${DIR}
 
 .PHONY: test
 test:
