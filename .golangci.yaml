@@ -1,0 +1,89 @@
+# Useful config recomendation guide:
+# https://gist.github.com/maratori/47a4d00457a92aa426dbd48a18776322
+version: "2"
+linters:
+  default: all
+  disable:
+    - varnamelen  # impractical IRL.
+    - godox  # TODO statements are useful and shouldn't make a linter error.
+    - exhaustruct  # more annoying than useful.
+    - noinlineerr  # we use inline errors
+    - wsl  # deprecated using wsl_v5
+  exclusions:
+    rules:
+      - path: '.*main\.go'
+        linters:
+          - forbidigo
+          - gochecknoglobals
+      - path: 'cmd/app.go'
+        linters:
+          - gochecknoglobals
+      - path: '.*errors\.go'
+        linters:
+          - cyclop
+          - funlen
+      - path: '_test\.go'
+        linters:
+          - dupl
+          - err113
+          - funlen
+          - gochecknoglobals
+          - maintidx
+          - noctx
+      - path: 'internal/flags/vars.go'
+        linters:
+          - gochecknoglobals
+      - text: 'unused-parameter: parameter \S+ seems to be unused, consider removing or renaming it as _'
+        linters:
+          - revive
+      - text: "exported .* should have comment"
+        linters:
+          - revive
+  settings:
+    depguard:
+      rules:
+        "deprecated":
+          files:
+            - "$all"
+          deny:
+            - pkg: github.com/satori/go.uuid
+              desc: Use github.com/google/uuid instead, satori's package is not maintained
+            - pkg: github.com/gofrs/uuid$
+              desc: Use github.com/gofrs/uuid/v5 or later, it was not a go module before v5
+            - pkg: gopkg.in/yaml.v3
+              desc: Use go.yaml.in/yaml/v4
+        "non-test files":
+          files:
+            - "!$test"
+          deny:
+            - pkg: math/rand$
+              desc: Use math/rand/v2 instead, see https://go.dev/blog/randv2
+    mnd:
+      ignored-functions:
+        - os.MkdirAll
+        - os.WriteFile
+        - time.After
+        - time.NewTicker
+    usetesting:
+      context-background: true
+      context-todo: true
+      os-chdir: true
+      os-mkdir-temp: true
+      os-setenv: true
+      os-create-temp: true
+      os-temp-dir: true
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+      case-max-lines: 0
+      disable:
+        - decl  # requires a newline between separate var statements which hurts readability
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+    - golines
+run:
+  timeout: 2m

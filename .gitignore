@@ -1,0 +1,10 @@
+pair
+.DS_Store
+_null-ls*
+coverage.out
+TODO.md
+dist/
+.env
+*.gif
+.mypy_cache/
+
