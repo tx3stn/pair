@@ -26,7 +26,9 @@ func NewApp() *cobra.Command {
 		Version: Version,
 	}
 
+	rootCmd.AddCommand(NewCmdCommit())
 	rootCmd.AddCommand(NewCmdOn())
+	rootCmd.AddCommand(NewCmdWith())
 
 	rootCmd.PersistentFlags().
 		BoolVar(&flags.Verbose, "verbose", false, "display verbose output for more detail on what the command is doing")

@@ -8,6 +8,7 @@ linters:
     - godox  # TODO statements are useful and shouldn't make a linter error.
     - exhaustruct  # more annoying than useful.
     - noinlineerr  # we use inline errors
+    - unqueryvet  # not using SQL
     - wsl  # deprecated using wsl_v5
   exclusions:
     rules:

@@ -10,9 +10,11 @@ import (
 
 // Config represents the options defined in the config file.
 type Config struct {
-	CoAuthors    map[string]string `json:"coAuthors"`
-	Prefixes     []string          `json:"prefixes"`
-	TicketPrefix string            `json:"ticketPrefix"`
+	AccessibleMode bool              `json:"accessible"`
+	CoAuthors      map[string]string `json:"coAuthors"`
+	CommitArgs     string            `json:"commitArgs"`
+	Prefixes       []string          `json:"prefixes"`
+	TicketPrefix   string            `json:"ticketPrefix"`
 }
 
 // Get returns the config read from the file.
