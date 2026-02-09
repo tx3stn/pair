@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"log"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tx3stn/pair/internal/config"
+	"github.com/tx3stn/pair/internal/pairing"
 	"github.com/tx3stn/pair/internal/prompt"
 )
 
@@ -28,8 +30,10 @@ func NewCmdWith() *cobra.Command {
 				log.Println(co.Format())
 			}
 
-			// TODO: write to tmp file.
-			// file path /tmp/pair/DATE/with
+			session := pairing.NewSession(pairing.DataDir, time.Now())
+			if err := session.SetCoAuthors(selected); err != nil {
+				return err
+			}
 
 			return nil
 		},

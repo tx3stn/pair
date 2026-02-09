@@ -1,11 +1,15 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tx3stn/pair/internal/config"
 	"github.com/tx3stn/pair/internal/git"
+	"github.com/tx3stn/pair/internal/pairing"
 	"github.com/tx3stn/pair/internal/prompt"
 )
 
@@ -24,16 +28,35 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
-			// Read ticket id
-			// Read coauthors
-			// Create text area with coauthors and prefix to type message
-			commitMsg := selected + "(): "
+			session := pairing.NewSession(pairing.DataDir, time.Now())
 
-			if err := git.Commit(commitMsg, conf.CommitArgs); err != nil {
+			ticketID, err := session.GetTicketID()
+			if err != nil {
 				return err
 			}
 
-			log.Printf("committed: %s", commitMsg)
+			coAuthors, err := session.GetCoAuthors()
+			if err != nil {
+				return err
+			}
+
+			commitMsg := fmt.Sprintf(
+				"%s(%s): \n\n%s",
+				selected,
+				ticketID,
+				strings.Join(coAuthors, "\n"),
+			)
+
+			msg, err := prompt.EditCommitMessage(commitMsg, conf.AccessibleMode)
+			if err != nil {
+				return err
+			}
+
+			if err := git.Commit(msg, conf.CommitArgs); err != nil {
+				return err
+			}
+
+			log.Printf("committed: %s", msg)
 
 			return nil
 		},

@@ -2,34 +2,40 @@ package cmd
 
 import (
 	"log"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tx3stn/pair/internal/config"
+	"github.com/tx3stn/pair/internal/pairing"
+	"github.com/tx3stn/pair/internal/prompt"
 )
 
 func NewCmdOn() *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
-			var ticketID string
-
-			if len(args) == 0 {
-				ticketID = "prompt"
-			} else {
-				ticketID = args[0]
-			}
-
 			conf, err := config.Get()
 			if err != nil {
 				return err
 			}
 
-			if conf.TicketPrefix != "" {
-				ticketID = conf.TicketPrefix + ticketID
+			var ticketID string
+
+			if len(args) == 0 {
+				ticketID, err = prompt.TicketID(conf.TicketPrefix, conf.AccessibleMode)
+				if err != nil {
+					return err
+				}
+			} else {
+				ticketID = args[0]
 			}
 
-			// TODO: write to tmp file.
-			// file path /tmp/pair/DATE/on
-			log.Printf("ticket: %s", ticketID)
+			session := pairing.NewSession(pairing.DataDir, time.Now())
+			if err := session.SetTicketID(ticketID); err != nil {
+				return err
+			}
+
+			// TODO: debug log output
+			log.Printf("set ticket id: %s", ticketID)
 
 			return nil
 		},
