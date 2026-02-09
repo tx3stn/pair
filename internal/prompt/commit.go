@@ -2,15 +2,22 @@ package prompt
 
 import (
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 )
 
-func EditCommitMessage(message string, accessible bool) (string, error) {
+func EditCommitMessage(message string, coAuthors []string, accessible bool) (string, error) {
 	edited := message
 
+	description := ""
+	if len(coAuthors) > 0 {
+		description = strings.Join(coAuthors, "\n")
+	}
+
 	prompt := huh.NewText().
-		Title("commit message:").
+		Title("edit commit message:").
+		Description(description).
 		Value(&edited)
 
 	if accessible {
@@ -21,6 +28,11 @@ func EditCommitMessage(message string, accessible bool) (string, error) {
 		if err := prompt.Run(); err != nil {
 			return "", ErrEditingCommitMessage
 		}
+	}
+
+	// Add co-authors back to the final message
+	if len(coAuthors) > 0 {
+		edited += "\n\n" + strings.Join(coAuthors, "\n")
 	}
 
 	return edited, nil

@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -41,13 +40,12 @@ func NewCmdCommit() *cobra.Command {
 			}
 
 			commitMsg := fmt.Sprintf(
-				"%s(%s): \n\n%s",
+				"%s(%s): ",
 				selected,
 				ticketID,
-				strings.Join(coAuthors, "\n"),
 			)
 
-			msg, err := prompt.EditCommitMessage(commitMsg, conf.AccessibleMode)
+			msg, err := prompt.EditCommitMessage(commitMsg, coAuthors, conf.AccessibleMode)
 			if err != nil {
 				return err
 			}
@@ -56,7 +54,7 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
-			log.Printf("committed: %s", msg)
+			log.Printf("committed:\n%s", msg)
 
 			return nil
 		},
