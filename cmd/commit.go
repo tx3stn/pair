@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tx3stn/pair/internal/config"
 	"github.com/tx3stn/pair/internal/git"
+	"github.com/tx3stn/pair/internal/prompt"
 )
 
 func NewCmdCommit() *cobra.Command {
@@ -16,9 +17,17 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
-			commitMsg := ""
-			// Prompt for prefix
+			prefix := prompt.NewPrefixSelector(conf.Prefixes, conf.AccessibleMode)
+
+			selected, err := prefix.Select()
+			if err != nil {
+				return err
+			}
+
+			// Read ticket id
+			// Read coauthors
 			// Create text area with coauthors and prefix to type message
+			commitMsg := selected + "(): "
 
 			if err := git.Commit(commitMsg, conf.CommitArgs); err != nil {
 				return err

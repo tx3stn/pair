@@ -27,6 +27,8 @@ func NewCmdOn() *cobra.Command {
 				ticketID = conf.TicketPrefix + ticketID
 			}
 
+			// TODO: write to tmp file.
+			// file path /tmp/pair/DATE/on
 			log.Printf("ticket: %s", ticketID)
 
 			return nil

@@ -23,9 +23,13 @@ func NewCmdWith() *cobra.Command {
 				return err
 			}
 
+			// TODO: debug log selected
 			for _, co := range selected {
 				log.Println(co.Format())
 			}
+
+			// TODO: write to tmp file.
+			// file path /tmp/pair/DATE/with
 
 			return nil
 		},
