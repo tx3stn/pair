@@ -15,6 +15,8 @@ import (
 func NewCmdCommit() *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
+			ctx := cmd.Context()
+
 			conf, err := config.Get()
 			if err != nil {
 				return err
@@ -50,7 +52,7 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
-			if err := git.Commit(msg, conf.CommitArgs); err != nil {
+			if _, err := git.Commit(ctx, msg, conf.CommitArgs); err != nil {
 				return err
 			}
 
