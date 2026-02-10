@@ -18,30 +18,41 @@ func NewCmdOn() *cobra.Command {
 				return err
 			}
 
-			var ticketID string
+			session := pairing.NewSession(pairing.DataDir, time.Now())
 
-			if len(args) == 0 {
-				ticketID, err = prompt.TicketID(conf.TicketPrefix, conf.AccessibleMode)
-				if err != nil {
-					return err
-				}
-			} else {
+			ticketID := ""
+
+			if len(args) > 0 {
 				ticketID = args[0]
 			}
 
-			session := pairing.NewSession(pairing.DataDir, time.Now())
-			if err := session.SetTicketID(ticketID); err != nil {
-				return err
-			}
+			_, err = setTicketID(session, conf, ticketID)
 
-			// TODO: debug log output
-			log.Printf("set ticket id: %s", ticketID)
-
-			return nil
+			return err
 		},
 		Short: "Specify the ticket you are pairing on",
 		Use:   "on",
 	}
 
 	return cmd
+}
+
+func setTicketID(session pairing.Session, conf config.Config, ticketID string) (string, error) {
+	var err error
+
+	if ticketID == "" {
+		ticketID, err = prompt.TicketID(conf.TicketPrefix, conf.AccessibleMode)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if err := session.SetTicketID(ticketID); err != nil {
+		return "", err
+	}
+
+	// TODO: debug log output
+	log.Printf("set ticket id: %s", ticketID)
+
+	return ticketID, nil
 }

@@ -24,7 +24,7 @@ func NewCmdCommit() *cobra.Command {
 
 			prefix := prompt.NewPrefixSelector(conf.Prefixes, conf.AccessibleMode)
 
-			selected, err := prefix.Select()
+			commitType, err := prefix.Select()
 			if err != nil {
 				return err
 			}
@@ -36,18 +36,30 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
+			if ticketID == "" {
+				ticketID, err = setTicketID(session, conf, "")
+				if err != nil {
+					return err
+				}
+			}
+
 			coAuthors, err := session.GetCoAuthors()
 			if err != nil {
 				return err
 			}
 
-			commitMsg := fmt.Sprintf(
-				"%s(%s): ",
-				selected,
-				ticketID,
-			)
+			if len(coAuthors) == 0 {
+				coAuthors, err = setCoAuthors(session, conf)
+				if err != nil {
+					return err
+				}
+			}
 
-			msg, err := prompt.EditCommitMessage(commitMsg, coAuthors, conf.AccessibleMode)
+			msg, err := prompt.EditCommitMessage(
+				fmt.Sprintf("%s(%s%s): ", commitType, conf.TicketPrefix, ticketID),
+				coAuthors,
+				conf.AccessibleMode,
+			)
 			if err != nil {
 				return err
 			}

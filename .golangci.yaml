@@ -44,6 +44,9 @@ linters:
         linters:
           - revive
   settings:
+    cyclop:
+      max-complexity: 12
+      package-average: 0
     depguard:
       rules:
         "deprecated":
@@ -62,6 +65,10 @@ linters:
           deny:
             - pkg: math/rand$
               desc: Use math/rand/v2 instead, see https://go.dev/blog/randv2
+    funlen:
+      lines: 80
+      statements: 40
+      ignore-comments: true
     mnd:
       ignored-functions:
         - os.MkdirAll

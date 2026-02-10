@@ -77,7 +77,7 @@ func TestSessionSetCoAuthors(t *testing.T) {
 			t.Parallel()
 
 			session := pairing.NewSession(t.TempDir(), testDate)
-			err := session.SetCoAuthors(tc.coAuthors)
+			_, err := session.SetCoAuthors(tc.coAuthors)
 			require.ErrorIs(t, err, tc.expectedError)
 
 			if tc.expectedError != nil {

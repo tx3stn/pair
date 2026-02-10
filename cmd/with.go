@@ -18,28 +18,36 @@ func NewCmdWith() *cobra.Command {
 				return err
 			}
 
-			coAuthors := prompt.NewCoAuthorSelector(conf.CoAuthors, conf.AccessibleMode)
-
-			selected, err := coAuthors.Select()
-			if err != nil {
-				return err
-			}
-
-			// TODO: debug log selected
-			for _, co := range selected {
-				log.Println(co.Format())
-			}
-
 			session := pairing.NewSession(pairing.DataDir, time.Now())
-			if err := session.SetCoAuthors(selected); err != nil {
-				return err
-			}
 
-			return nil
+			_, err = setCoAuthors(session, conf)
+
+			return err
 		},
 		Short: "Select who you're pairing with",
 		Use:   "with",
 	}
 
 	return cmd
+}
+
+func setCoAuthors(session pairing.Session, conf config.Config) ([]string, error) {
+	coAuthors := prompt.NewCoAuthorSelector(conf.CoAuthors, conf.AccessibleMode)
+
+	selected, err := coAuthors.Select()
+	if err != nil {
+		return []string{}, err
+	}
+
+	// TODO: debug log selected
+	for _, co := range selected {
+		log.Println(co.Format())
+	}
+
+	coAuth, err := session.SetCoAuthors(selected)
+	if err != nil {
+		return []string{}, err
+	}
+
+	return coAuth, err
 }

@@ -49,7 +49,7 @@ func (s Session) GetCoAuthors() ([]string, error) {
 	return s.with, nil
 }
 
-func (s Session) SetCoAuthors(coAuthors []git.CoAuthor) error {
+func (s Session) SetCoAuthors(coAuthors []git.CoAuthor) ([]string, error) {
 	formatted := make([]string, len(coAuthors))
 	for i, author := range coAuthors {
 		formatted[i] = author.Format()
@@ -60,14 +60,15 @@ func (s Session) SetCoAuthors(coAuthors []git.CoAuthor) error {
 	path := s.GetPath("with")
 
 	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
-		return fmt.Errorf("%w: %w", ErrCreatingDirectory, err)
+		return []string{}, fmt.Errorf("%w: %w", ErrCreatingDirectory, err)
 	}
 
-	if err := os.WriteFile(path, []byte(strings.Join(s.with, "\n")), 0o600); err != nil {
-		return fmt.Errorf("%w: %w", ErrWritingCoAuthors, err)
+	stringOutput := strings.Join(s.with, "\n")
+	if err := os.WriteFile(path, []byte(stringOutput), 0o600); err != nil {
+		return []string{}, fmt.Errorf("%w: %w", ErrWritingCoAuthors, err)
 	}
 
-	return nil
+	return formatted, nil
 }
 
 func (s Session) GetTicketID() (string, error) {
