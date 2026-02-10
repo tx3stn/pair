@@ -27,6 +27,7 @@ func NewApp() *cobra.Command {
 	}
 
 	rootCmd.AddCommand(NewCmdCommit())
+	rootCmd.AddCommand(NewCmdDone())
 	rootCmd.AddCommand(NewCmdOn())
 	rootCmd.AddCommand(NewCmdWith())
 
