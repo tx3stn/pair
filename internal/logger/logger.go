@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/tx3stn/pair/internal/flags"
 )
 
@@ -34,13 +35,18 @@ func (h *customHandler) Enabled(_ context.Context, level slog.Level) bool {
 
 func (h *customHandler) Handle(_ context.Context, r slog.Record) error {
 	args := ""
+	keyColor := getKeyColor(r.Level)
 
 	r.Attrs(func(a slog.Attr) bool {
 		if args != "" {
 			args += " "
 		}
 
-		args += fmt.Sprintf("%s=%v", a.Key, a.Value)
+		if h.accessible {
+			args += fmt.Sprintf("%s=%v", a.Key, a.Value)
+		} else {
+			args += fmt.Sprintf("%s=%v", keyColor.Sprint(a.Key), a.Value)
+		}
 
 		return true
 	})
@@ -68,18 +74,35 @@ func (h *customHandler) WithGroup(name string) slog.Handler {
 }
 
 func colorizeLevel(level slog.Level) string {
-	icon := "🍐 "
+	return getKeyColor(level).Sprint(fmt.Sprintf("🍐 %s:", getLevelText(level)))
+}
 
+func getLevelText(level slog.Level) string {
 	switch level {
 	case slog.LevelDebug:
-		return fmt.Sprintf("\033[36m%sDEBUG:\033[0m", icon)
+		return "DEBUG"
 	case slog.LevelInfo:
-		return fmt.Sprintf("\033[32m%s INFO:\033[0m", icon)
+		return " INFO"
 	case slog.LevelWarn:
-		return fmt.Sprintf("\033[33m%s  WARN:\033[0m", icon)
+		return " WARN"
 	case slog.LevelError:
-		return fmt.Sprintf("\033[31m%s ERROR:\033[0m", icon)
+		return "ERROR"
 	default:
 		return level.String()
+	}
+}
+
+func getKeyColor(level slog.Level) *color.Color {
+	switch level {
+	case slog.LevelDebug:
+		return color.New(color.FgCyan)
+	case slog.LevelInfo:
+		return color.New(color.FgGreen)
+	case slog.LevelWarn:
+		return color.New(color.FgYellow)
+	case slog.LevelError:
+		return color.New(color.FgRed)
+	default:
+		return color.New()
 	}
 }
