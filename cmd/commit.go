@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -56,8 +57,12 @@ func NewCmdCommit() *cobra.Command {
 				}
 			}
 
+			if !strings.HasPrefix(ticketID, conf.TicketPrefix) {
+				ticketID = conf.TicketPrefix + ticketID
+			}
+
 			msg, err := prompt.EditCommitMessage(
-				fmt.Sprintf("%s(%s%s): ", commitType, conf.TicketPrefix, ticketID),
+				fmt.Sprintf("%s(%s): ", commitType, ticketID),
 				coAuthors,
 				conf.AccessibleMode,
 			)
