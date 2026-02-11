@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -50,7 +51,7 @@ func NewCmdCommit() *cobra.Command {
 
 			if len(coAuthors) == 0 {
 				coAuthors, err = setCoAuthors(session, conf)
-				if err != nil {
+				if err != nil && !errors.Is(err, prompt.ErrNoCoAuthorsSelected) {
 					return err
 				}
 			}
