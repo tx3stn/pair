@@ -18,27 +18,27 @@ type Config struct {
 }
 
 // Get returns the config read from the file.
-func Get() (Config, error) {
+func Get() (*Config, error) {
 	file, err := FindConfigFile()
 	if err != nil {
-		return Config{}, fmt.Errorf("error checking for existence of config file: %w", err)
+		return &Config{}, fmt.Errorf("error checking for existence of config file: %w", err)
 	}
 
 	if file == "" {
-		return Config{}, ErrConfigNotFound
+		return &Config{}, ErrConfigNotFound
 	}
 
 	content, err := os.ReadFile(filepath.Clean(file))
 	if err != nil {
-		return Config{}, fmt.Errorf("%w: %w", ErrReadingConfigFile, err)
+		return &Config{}, fmt.Errorf("%w: %w", ErrReadingConfigFile, err)
 	}
 
 	var conf Config
 	if err = json.Unmarshal(content, &conf); err != nil {
-		return Config{}, fmt.Errorf("%w: %w", ErrUnmashallingJSON, err)
+		return &Config{}, fmt.Errorf("%w: %w", ErrUnmashallingJSON, err)
 	}
 
-	return conf, nil
+	return &conf, nil
 }
 
 // FindConfigFile checks the expected paths for a pair.json config file and returns

@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"strings"
 	"time"
 
@@ -14,15 +14,10 @@ import (
 	"github.com/tx3stn/pair/internal/prompt"
 )
 
-func NewCmdCommit() *cobra.Command {
+func NewCmdCommit(conf *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-
-			conf, err := config.Get()
-			if err != nil {
-				return err
-			}
 
 			prefix := prompt.NewPrefixSelector(conf.Prefixes, conf.AccessibleMode)
 
@@ -74,7 +69,7 @@ func NewCmdCommit() *cobra.Command {
 				return err
 			}
 
-			log.Printf("committed:\n%s", msg)
+			slog.Info("changes committed", "msg", msg)
 
 			return nil
 		},

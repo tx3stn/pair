@@ -3,7 +3,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/tx3stn/pair/cmd"
@@ -22,6 +22,6 @@ func main() {
 	if err := app.ExecuteContext(ctx); err != nil {
 		code = 1
 
-		fmt.Printf("%s\n", err.Error())
+		slog.Error(err.Error())
 	}
 }

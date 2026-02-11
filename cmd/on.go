@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -10,14 +10,9 @@ import (
 	"github.com/tx3stn/pair/internal/prompt"
 )
 
-func NewCmdOn() *cobra.Command {
+func NewCmdOn(conf *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conf, err := config.Get()
-			if err != nil {
-				return err
-			}
-
 			session := pairing.NewSession(pairing.DataDir, time.Now())
 
 			ticketID := ""
@@ -26,7 +21,7 @@ func NewCmdOn() *cobra.Command {
 				ticketID = args[0]
 			}
 
-			_, err = setTicketID(session, conf, ticketID)
+			_, err := setTicketID(session, conf, ticketID)
 
 			return err
 		},
@@ -37,7 +32,7 @@ func NewCmdOn() *cobra.Command {
 	return cmd
 }
 
-func setTicketID(session pairing.Session, conf config.Config, ticketID string) (string, error) {
+func setTicketID(session pairing.Session, conf *config.Config, ticketID string) (string, error) {
 	var err error
 
 	if ticketID == "" {
@@ -51,8 +46,7 @@ func setTicketID(session pairing.Session, conf config.Config, ticketID string) (
 		return "", err
 	}
 
-	// TODO: debug log output
-	log.Printf("set ticket id: %s", ticketID)
+	slog.Debug("set ticket id", "ticketID", ticketID)
 
 	return ticketID, nil
 }

@@ -1,14 +1,15 @@
 package cmd
 
 import (
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/tx3stn/pair/internal/config"
 	"github.com/tx3stn/pair/internal/pairing"
 )
 
-func NewCmdDone() *cobra.Command {
+func NewCmdDone(_ *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
 			session := pairing.NewSession(pairing.DataDir, time.Now())
@@ -17,7 +18,7 @@ func NewCmdDone() *cobra.Command {
 				return err
 			}
 
-			log.Println("pairing session complete!")
+			slog.Info("pairing session complete!")
 
 			return nil
 		},

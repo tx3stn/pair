@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -10,28 +10,23 @@ import (
 	"github.com/tx3stn/pair/internal/prompt"
 )
 
-func NewCmdWith() *cobra.Command {
+func NewCmdWith(conf *config.Config) *cobra.Command {
 	cmd := &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conf, err := config.Get()
-			if err != nil {
-				return err
-			}
-
 			session := pairing.NewSession(pairing.DataDir, time.Now())
 
-			_, err = setCoAuthors(session, conf)
+			_, err := setCoAuthors(session, conf)
 
 			return err
 		},
-		Short: "Select who you're pairing with",
+		Short: "Select who you are pairing with",
 		Use:   "with",
 	}
 
 	return cmd
 }
 
-func setCoAuthors(session pairing.Session, conf config.Config) ([]string, error) {
+func setCoAuthors(session pairing.Session, conf *config.Config) ([]string, error) {
 	coAuthors := prompt.NewCoAuthorSelector(conf.CoAuthors, conf.AccessibleMode)
 
 	selected, err := coAuthors.Select()
@@ -39,9 +34,8 @@ func setCoAuthors(session pairing.Session, conf config.Config) ([]string, error)
 		return []string{}, err
 	}
 
-	// TODO: debug log selected
 	for _, co := range selected {
-		log.Println(co.Format())
+		slog.Debug("added co-author", "coAuthor", co.Format())
 	}
 
 	coAuth, err := session.SetCoAuthors(selected)

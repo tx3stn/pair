@@ -53,17 +53,17 @@ func TestGet(t *testing.T) {
 	testCases := map[string]struct {
 		xdgEnvValue   string
 		expectedError error
-		expected      config.Config
+		expected      *config.Config
 	}{
 		"ReturnsErrorWhenFileIsInvalid": {
 			xdgEnvValue:   "testdata/xdg/invalid",
 			expectedError: config.ErrUnmashallingJSON,
-			expected:      config.Config{},
+			expected:      &config.Config{},
 		},
 		"ReturnsFileValidFileAsConfig": {
 			xdgEnvValue:   "testdata/xdg/valid",
 			expectedError: nil,
-			expected: config.Config{
+			expected: &config.Config{
 				CoAuthors: map[string]string{
 					"billy bob": "billy@billybob.org",
 				},
@@ -78,7 +78,7 @@ func TestGet(t *testing.T) {
 		"ReturnsErrorIfFileIsNotFound": {
 			xdgEnvValue:   "testdata/xdg/missing",
 			expectedError: config.ErrConfigNotFound,
-			expected:      config.Config{},
+			expected:      &config.Config{},
 		},
 	}
 
