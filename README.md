@@ -5,7 +5,7 @@
   <em>Pair commits with ticket ids and co-authors made simple.</em>
 </p>
 
-![pair-demo](https://github.com/user-attachments/assets/1664d5e6-1493-4393-85c5-22e073f07fe2)
+![pair-demo](https://github.com/user-attachments/assets/27dec47a-5c02-40d8-88f6-0d82c603ae53)
 
 ## Contents
 
@@ -57,13 +57,13 @@ Set the ticket id you are working on.
 You can pass the ticket directly to the command, or just run `pair on` for an interactive
 prompt to enter the ticket id.
 
-![pair-on-demo](https://github.com/user-attachments/assets/1664d5e6-1493-4393-85c5-22e073f07fe2)
+![pair-on-demo](https://github.com/user-attachments/assets/413e073c-bd6c-4a5a-8362-84a3635f5827)
 
 ### `with`
 
 Select co-authors from the list defined in your config file.
 
-![pair-with-demo](https://github.com/user-attachments/assets/1664d5e6-1493-4393-85c5-22e073f07fe2)
+![pair-with-demo](https://github.com/user-attachments/assets/8ad2b3ad-d0b7-4c23-a43b-5b9b16b2649b)
 
 ### `commit`
 
