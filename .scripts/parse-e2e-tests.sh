@@ -1,39 +1,31 @@
-#!/bin/bash
+#!/bin/sh
 
-# Parse e2e test output and create a summary
+# Parse the e2e test output and create a simple markdown table from the results
+# to display as a summary in the GITHUB_STEP_SUMMARY output.
 
-awk '
-BEGIN {
-    tests = 0
-    passed = 0
-    failed = 0
-    skipped = 0
-}
+# reads from /dev/stdin so you can pipe tests to the script.
+summary=$(cat -)
 
-/^ok/ {
-    tests++
-    passed++
-    print "✅ " $0
-}
+echo '## 🧪 end to end test results'
+echo ''
+echo '| status | command | test name |'
+echo '| --- | --- | --- |'
+echo "$summary" | while IFS= read -r line; do
+	if [ "$line" != "${line#1..}" ]; then
+		continue
+	fi
 
-/^not ok/ {
-    tests++
-    failed++
-    print "❌ " $0
-}
+	status=$(echo "$line" | cut -d' ' -f1)
 
-/^ok.*# SKIP/ {
-    skipped++
-    print "⏭️  " $0
-}
+	if [ "$status" = "ok" ]; then
+		result_icon='✓'
+	else
+		result_icon='✕'
+	fi
 
-END {
-    print ""
-    print "## Summary"
-    print "- **Total tests:** " tests
-    print "- **Passed:** " passed
-    print "- **Failed:** " failed
-    if (skipped > 0) {
-        print "- **Skipped:** " skipped
-    }
-}'
+	cmd_name=$(echo "$line" | cut -d' ' -f4)
+	test_name=$(echo "$line" | cut -d'.' -f2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+	echo "| $result_icon | vrsn $cmd_name | $test_name |"
+done
+'
