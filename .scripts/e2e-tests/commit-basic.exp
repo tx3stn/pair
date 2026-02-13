@@ -1,0 +1,23 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout 5
+spawn pair commit
+match_max 100000
+
+# Debug: show everything
+log_user 1
+
+expect {
+    -re ".*" {
+        puts "DEBUG: Got output: $expect_out(0,string)"
+        exp_continue
+    }
+    timeout {
+        puts "DEBUG: Timeout reached"
+        exit 1
+    }
+    eof {
+        puts "DEBUG: Process ended normally"
+    }
+}

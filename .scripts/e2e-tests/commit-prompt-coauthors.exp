@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout -1
+spawn pair commit
+match_max 100000
+expect -re ".*paring with\:(.|\n|\r)*"
+send -- "2\r"
+expect -re ".*select commit type\:(.|\n|\r)*"
+send -- "1\r"
+expect -re ".*TICKET-789(.|\n|\r)*commit message\:(.|\n|\r)*"
+send -- "test commit message\r"
+expect eof

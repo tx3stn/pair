@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout -1
+spawn pair on
+match_max 100000
+expect -re ".*enter ticket ID\:(.|\n|\r)*"
+send -- "TEST-999\r"
+expect eof

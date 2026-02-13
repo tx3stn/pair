@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout -1
+spawn pair with
+match_max 100000
+expect -re ".*paring with\:(.|\n|\r)*"
+send -- "\r"
+expect eof
