@@ -15,7 +15,15 @@ echo "$summary" | while IFS= read -r line; do
 		continue
 	fi
 
-	status=$(echo "$line" | cut -d' ' -f1)
+	case "$line" in
+		ok\ *|not\ ok\ *)
+			;;
+		*)
+			continue
+			;;
+	esac
+
+	status=$(echo "$line" | awk '{print $1}')
 
 	if [ "$status" = "ok" ]; then
 		result_icon='✓'
@@ -23,9 +31,18 @@ echo "$summary" | while IFS= read -r line; do
 		result_icon='✕'
 	fi
 
-	cmd_name=$(echo "$line" | cut -d' ' -f4)
-	test_name=$(echo "$line" | cut -d'.' -f2 | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+	# Parse lines shaped like:
+	# ok 10 pair with: select single co-author
+	payload=$(echo "$line" | sed -n \
+		-e 's/^ok [0-9][0-9]* pair //p' \
+		-e 's/^not ok [0-9][0-9]* pair //p')
 
-	echo "| $result_icon | vrsn $cmd_name | $test_name |"
+	cmd_name=${payload%%:*}
+	test_name=${payload#*: }
+
+	if [ -z "$cmd_name" ] || [ -z "$test_name" ] || [ "$cmd_name" = "$payload" ]; then
+		continue
+	fi
+
+	echo "| $result_icon | pair $cmd_name | $test_name |"
 done
-'
