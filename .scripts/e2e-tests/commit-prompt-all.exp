@@ -4,12 +4,16 @@ set env(ACCESSIBLE) true
 set timeout 10
 spawn pair commit
 match_max 100000
-expect -re ".*enter ticket ID\:(.|\n|\r)*"
+expect -re {.*Enter a number between [0-9]+ and [0-9]+: }
+send -- "1\r"
+expect -re {.*enter ticket ID:.*}
 send -- "PROMPT-123\r"
-expect -re ".*paring with\:(.|\n|\r)*"
+expect -re {.*Enter a number between 0 and [0-9]+: }
 send -- "1\r"
-expect -re ".*select commit type\:(.|\n|\r)*"
-send -- "1\r"
-expect -re ".*commit message\:(.|\n|\r)*"
-send -- "test commit message\r"
+expect -re {.*Enter a number between 0 and [0-9]+: }
+send -- "0\r"
+expect -re {.*edit commit message:.*}
+send -- "fix(PROMPT-123): test commit message\r"
 expect eof
+set result [wait]
+exit [lindex $result 3]

@@ -12,8 +12,15 @@ import (
 // Commit commits the currently staged files with the msg (generated from the
 // pairing values and free text input) and the args specified in the config file.
 func Commit(ctx context.Context, msg string, args string) (string, error) {
-	// e.g.: git commit -S -m "feat(JIRA-100): did this thang"
-	return gitCommand(ctx, "commit", args, "-m", msg)
+	cmdArgs := []string{"commit"}
+
+	if strings.TrimSpace(args) != "" {
+		cmdArgs = append(cmdArgs, strings.Fields(args)...)
+	}
+
+	cmdArgs = append(cmdArgs, "-m", msg)
+
+	return gitCommand(ctx, cmdArgs...)
 }
 
 func gitCommand(ctx context.Context, args ...string) (string, error) {

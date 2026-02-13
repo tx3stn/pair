@@ -34,79 +34,78 @@ teardown() {
 	cleanup-pair-state
 }
 
-# FIXME: expect script is getting stuck
-# @test "pair commit: basic commit with ticket and co-authors" {
-# 	git checkout -b "$test_branch"
-#
-# 	# Set up pair state in /tmp/pair/<DATE>/
-# 	today=$(date +%Y-%m-%d)
-# 	mkdir -p "/tmp/pair/$today"
-# 	echo "TICKET-456" > "/tmp/pair/$today/on"
-# 	echo -e "Alice Smith <alice@example.com>\nBob Jones <bob@example.com>" > "/tmp/pair/$today/with"
-#
-# 	# Make a change to commit
-# 	echo "test change" >> README.md
-# 	git add README.md
-#
-# 	expect_script="$BATS_TEST_DIRNAME/commit-basic.exp"
-# 	run "$expect_script"
-# 	assert_success
-#
-# 	# Check the commit message includes ticket and co-authors
-# 	run git log -1 --pretty=format:"%s%n%b"
-# 	assert_success
-# 	assert_output --partial "TICKET-456"
-# 	assert_output --partial "test commit message"
-# 	assert_output --partial "Co-authored-by:"
-# }
-#
-# @test "pair commit: prompt for ticket and co-authors when not set" {
-# 	git checkout -b "$test_branch"
-#
-# 	# Make a change to commit
-# 	echo "test change" >>README.md
-# 	git add README.md
-#
-# 	expect_script="$BATS_TEST_DIRNAME/commit-prompt-all.exp"
-# 	run "$expect_script"
-# 	assert_success
-#
-# 	# Check the commit message includes prompted values
-# 	run git log -1 --pretty=format:"%s%n%b"
-# 	assert_success
-# 	assert_output --partial "PROMPT-123"
-# 	assert_output --partial "test commit message"
-# 	assert_output --partial "Co-authored-by:"
-# }
-#
-# @test "pair commit: prompt for co-authors when ticket set" {
-# 	git checkout -b "$test_branch"
-#
-# 	# Set up only ticket
-# 	today=$(date +%Y-%m-%d)
-# 	mkdir -p "/tmp/pair/$today"
-# 	echo "TICKET-789" >"/tmp/pair/$today/on"
-#
-# 	# Make a change to commit
-# 	echo "test change" >>README.md
-# 	git add README.md
-#
-# 	expect_script="$BATS_TEST_DIRNAME/commit-prompt-coauthors.exp"
-# 	run "$expect_script"
-# 	assert_success
-#
-# 	# Check the commit message includes ticket and prompted co-authors
-# 	run git log -1 --pretty=format:"%s%n%b"
-# 	assert_success
-# 	assert_output --partial "TICKET-789"
-# 	assert_output --partial "test commit message"
-# 	assert_output --partial "Co-authored-by:"
-# }
-#
-# @test "pair commit: no changes to commit" {
-# 	git checkout -b "$test_branch"
-#
-# 	run pair commit
-# 	assert_failure
-# 	assert_output --partial "nothing to commit"
-# }
+@test "pair commit: basic commit with ticket and co-authors" {
+	git checkout -b "$test_branch"
+
+	# Set up pair state in /tmp/pair/<DATE>/
+	today=$(date +%Y-%m-%d)
+	mkdir -p "/tmp/pair/$today"
+	echo "TICKET-456" >"/tmp/pair/$today/on"
+	echo -e "Co-authored-by: Alice Smith <alice@example.com>\nCo-authored-by: Bob Jones <bob@example.com>" >"/tmp/pair/$today/with"
+
+	# Make a change to commit
+	echo "test change" >>README.md
+	git add README.md
+
+	expect_script="$BATS_TEST_DIRNAME/commit-basic.exp"
+	run "$expect_script"
+	assert_success
+
+	# Check the commit message includes ticket and co-authors
+	run git log -1 --pretty=format:"%s%n%b"
+	assert_success
+	assert_output --partial "TICKET-456"
+	assert_output --partial "test commit message"
+	assert_output --partial "Co-authored-by:"
+}
+
+@test "pair commit: prompt for ticket and co-authors when not set" {
+	git checkout -b "$test_branch"
+
+	# Make a change to commit
+	echo "test change" >>README.md
+	git add README.md
+
+	expect_script="$BATS_TEST_DIRNAME/commit-prompt-all.exp"
+	run "$expect_script"
+	assert_success
+
+	# Check the commit message includes prompted values
+	run git log -1 --pretty=format:"%s%n%b"
+	assert_success
+	assert_output --partial "PROMPT-123"
+	assert_output --partial "test commit message"
+	assert_output --partial "Co-authored-by:"
+}
+
+@test "pair commit: prompt for co-authors when ticket set" {
+	git checkout -b "$test_branch"
+
+	# Set up only ticket
+	today=$(date +%Y-%m-%d)
+	mkdir -p "/tmp/pair/$today"
+	echo "TICKET-789" >"/tmp/pair/$today/on"
+
+	# Make a change to commit
+	echo "test change" >>README.md
+	git add README.md
+
+	expect_script="$BATS_TEST_DIRNAME/commit-prompt-coauthors.exp"
+	run "$expect_script"
+	assert_success
+
+	# Check the commit message includes ticket and prompted co-authors
+	run git log -1 --pretty=format:"%s%n%b"
+	assert_success
+	assert_output --partial "TICKET-789"
+	assert_output --partial "test commit message"
+	assert_output --partial "Co-authored-by:"
+}
+
+@test "pair commit: no changes to commit" {
+	git checkout -b "$test_branch"
+
+	run pair commit
+	assert_failure
+	assert_output --partial "error running git commands: exit status 1"
+}

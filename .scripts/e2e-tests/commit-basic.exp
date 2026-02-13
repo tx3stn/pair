@@ -1,23 +1,14 @@
 #!/usr/bin/expect -f
 
 set env(ACCESSIBLE) true
-set timeout 5
+set timeout 12
 spawn pair commit
 match_max 100000
 
-# Debug: show everything
-log_user 1
-
-expect {
-    -re ".*" {
-        puts "DEBUG: Got output: $expect_out(0,string)"
-        exp_continue
-    }
-    timeout {
-        puts "DEBUG: Timeout reached"
-        exit 1
-    }
-    eof {
-        puts "DEBUG: Process ended normally"
-    }
-}
+expect -re {.*Enter a number between [0-9]+ and [0-9]+: }
+send -- "1\r"
+expect -re {.*edit commit message:.*}
+send -- "fix(TICKET-456): test commit message\r"
+expect eof
+set result [wait]
+exit [lindex $result 3]
