@@ -44,8 +44,9 @@ teardown() {
 	# Check that coauthors file was created
 	today=$(date +%Y-%m-%d)
 	assert [ -f "/tmp/pair/$today/with" ]
-	coauthors=$(cat "/tmp/pair/$today/with")
-	assert [[ "$coauthors" == *"Co-authored-by: Alice Smith <alice@example.com>"* ]]
+	run cat "/tmp/pair/$today/with"
+	assert_success
+	assert_output --partial "Co-authored-by: Alice Smith <alice@example.com>"
 }
 
 @test "pair with: select multiple co-authors" {
@@ -56,10 +57,11 @@ teardown() {
 	assert_success
 	
 	today=$(date +%Y-%m-%d)
-	coauthors=$(cat "/tmp/pair/$today/with")
+	run cat "/tmp/pair/$today/with"
+	assert_success
 	# Should contain both authors (order may vary)
-	assert [[ "$coauthors" == *"Alice Smith"* ]]
-	assert [[ "$coauthors" == *"Bob Jones"* ]]
+	assert_output --partial "Alice Smith"
+	assert_output --partial "Bob Jones"
 }
 
 @test "pair with: overwrite existing co-authors" {
@@ -72,8 +74,9 @@ teardown() {
 	run "$expect_script"
 	assert_success
 	
-	coauthors=$(cat "/tmp/pair/$today/with")
-	assert [[ "$coauthors" == *"Co-authored-by: Charlie Brown <charlie@example.com>"* ]]
+	run cat "/tmp/pair/$today/with"
+	assert_success
+	assert_output --partial "Co-authored-by: Charlie Brown <charlie@example.com>"
 }
 
 @test "pair with: no co-author argument" {
