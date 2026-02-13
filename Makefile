@@ -7,9 +7,21 @@ define ajv-docker
 	docker run --rm -v "${PWD}":/repo weibeld/ajv-cli:5.0.0 ajv --spec draft2020
 endef
 
+define vhs-docker
+	docker run --rm -v "${PWD}":/vhs --workdir /vhs ${BINARY_NAME}/vhs:local
+endef
+
 .PHONY: build
 build:
 	@CGO_ENABLED=0 go build -ldflags "-X github.com/tx3stn/pair/cmd.Version=${VERSION}" -o ${BINARY_NAME}
+
+.PHONY: generate-gifs
+generate-gifs: build
+	@docker build --tag ${BINARY_NAME}/vhs:local -f ./.docker/demo-gif.Dockerfile .
+	@$(vhs-docker) /vhs/.scripts/gifs/commit.tape
+	@$(vhs-docker) /vhs/.scripts/gifs/done.tape
+	@$(vhs-docker) /vhs/.scripts/gifs/on.tape
+	@$(vhs-docker) /vhs/.scripts/gifs/with.tape
 
 .PHONY: lint
 lint:

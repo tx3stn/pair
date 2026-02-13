@@ -1,6 +1,6 @@
 {
 	"$schema": "./schema.json",
-	"accessible": true,
+	"accessible": false,
 	"coAuthors": {
 		"Alice Smith": "alice@example.com",
 		"Bob Jones": "bob@example.com",

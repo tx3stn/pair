@@ -7,4 +7,3 @@ dist/
 .env
 *.gif
 .mypy_cache/
-
