@@ -18,6 +18,7 @@ build:
 .PHONY: generate-gifs
 generate-gifs: build
 	@docker build --tag ${BINARY_NAME}/vhs:local -f ./.docker/demo-gif.Dockerfile .
+	@$(vhs-docker) /vhs/.scripts/gifs/overview.tape
 	@$(vhs-docker) /vhs/.scripts/gifs/commit.tape
 	@$(vhs-docker) /vhs/.scripts/gifs/done.tape
 	@$(vhs-docker) /vhs/.scripts/gifs/on.tape
