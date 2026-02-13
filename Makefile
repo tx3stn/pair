@@ -13,7 +13,7 @@ endef
 
 .PHONY: build
 build:
-	@CGO_ENABLED=0 go build -ldflags "-X github.com/tx3stn/pair/cmd.Version=${VERSION}" -o ${BINARY_NAME}
+	@CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/tx3stn/pair/cmd.Version=${VERSION}" -o ${BINARY_NAME}
 
 .PHONY: generate-gifs
 generate-gifs: build
@@ -23,6 +23,10 @@ generate-gifs: build
 	@$(vhs-docker) /vhs/.scripts/gifs/done.tape
 	@$(vhs-docker) /vhs/.scripts/gifs/on.tape
 	@$(vhs-docker) /vhs/.scripts/gifs/with.tape
+
+.PHONY: install
+install: build
+	@sudo cp ./${BINARY_NAME} /usr/local/bin/${BINARY_NAME}
 
 .PHONY: lint
 lint:
