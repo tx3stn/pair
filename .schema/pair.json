@@ -1,0 +1,17 @@
+{
+	"$schema": "./schema.json",
+	"accessible": true,
+	"coAuthors": {
+		"Alice Smith": "alice@example.com",
+		"Bob Jones": "bob@example.com",
+		"Charlie Brown": "charlie@example.com"
+	},
+	"commitArgs": "",
+	"prefixes": [
+		"fix",
+		"feat",
+		"docs",
+		"test"
+	],
+	"ticketPrefix": "TICKET-"
+}

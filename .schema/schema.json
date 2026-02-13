@@ -1,0 +1,56 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://raw.githubusercontent.com/tx3stn/pair/main/.schema/schema.json",
+	"title": "JSON schema for pair config file.",
+	"allOf": [
+		{
+			"$ref": "#/$defs/config"
+		}
+	],
+	"$defs": {
+		"config": {
+			"type": "object",
+			"properties": {
+				"$schema": {
+					"description": "Link to the JSON schema for validation.",
+					"type": "string"
+				},
+				"accessible": {
+					"description": "Replace TUI interactive prompts with standard prompts easier for screen readers to use.",
+					"type": "boolean"
+				},
+				"coAuthors": {
+					"description": "Map of co-author display names to email addresses.",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
+				},
+				"commitArgs": {
+					"description": "Additional arguments passed to git commit (for example: -s --no-verify).",
+					"type": "string"
+				},
+				"prefixes": {
+					"description": "Allowed commit prefixes shown in the commit prompt.",
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1
+				},
+				"ticketPrefix": {
+					"description": "Prefix added to ticket IDs when missing.",
+					"type": "string"
+				}
+			},
+			"required": [
+				"accessible",
+				"coAuthors",
+				"commitArgs",
+				"prefixes",
+				"ticketPrefix"
+			],
+			"additionalProperties": false
+		}
+	}
+}

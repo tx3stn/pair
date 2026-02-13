@@ -3,6 +3,10 @@ DIR ?= ./...
 PWD ?= $(shell pwd)
 VERSION ?= $(shell head -n 1 VERSION)
 
+define ajv-docker
+	docker run --rm -v "${PWD}":/repo weibeld/ajv-cli:5.0.0 ajv --spec draft2020
+endef
+
 .PHONY: build
 build:
 	@CGO_ENABLED=0 go build -ldflags "-X github.com/tx3stn/pair/cmd.Version=${VERSION}" -o ${BINARY_NAME}
@@ -11,6 +15,14 @@ build:
 lint:
 	@golangci-lint fmt ${DIR}
 	@golangci-lint run --fix ${DIR}
+
+.PHONY: schema-example-lint
+schema-example-lint:
+	@$(ajv-docker) validate -s /repo/.schema/schema.json -d /repo/.schema/pair.json
+
+.PHONY: schema-validate
+schema-validate:
+	@$(ajv-docker) compile -s /repo/.schema/schema.json
 
 .PHONY: test
 test:
