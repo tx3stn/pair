@@ -4,6 +4,7 @@ package prompt
 import (
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/charmbracelet/huh"
 	"github.com/tx3stn/pair/internal/git"
@@ -49,7 +50,7 @@ func selectCoAuthors(opts map[string]string, accessible bool) ([]string, error) 
 
 	options := make([]huh.Option[string], 0, len(opts))
 
-	for name := range opts {
+	for _, name := range sortedCoAuthorNames(opts) {
 		options = append(options, huh.NewOption(name, name))
 	}
 
@@ -69,4 +70,16 @@ func selectCoAuthors(opts map[string]string, accessible bool) ([]string, error) 
 	}
 
 	return selected, nil
+}
+
+func sortedCoAuthorNames(opts map[string]string) []string {
+	names := make([]string, 0, len(opts))
+
+	for name := range opts {
+		names = append(names, name)
+	}
+
+	slices.Sort(names)
+
+	return names
 }

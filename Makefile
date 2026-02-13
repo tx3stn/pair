@@ -23,4 +23,4 @@ testsum:
 .PHONY: test-e2e
 test-e2e:
 	@docker build . -f .docker/bats-tests.Dockerfile -t pair/e2e-tests:local
-	@docker run --rm -it -v ${PWD}/.scripts:/code pair/e2e-tests:local bats --verbose-run --formatter pretty /code/e2e-tests
+	@docker run --rm -e TERM=xterm -v ${PWD}/.scripts:/code pair/e2e-tests:local bats --verbose-run --formatter pretty /code/e2e-tests

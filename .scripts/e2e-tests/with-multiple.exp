@@ -1,10 +1,15 @@
 #!/usr/bin/expect -f
 
 set env(ACCESSIBLE) true
-set timeout -1
+set timeout 10
 spawn pair with
 match_max 100000
-expect -re ".*paring with\:(.|\n|\r)*"
-sleep 0.1
-send -- "1 2\r"
+expect -re {.*Input a number between 0 and [0-9]+: }
+send -- "1\r"
+expect -re {.*Input a number between 0 and [0-9]+: }
+send -- "2\r"
+expect -re {.*Input a number between 0 and [0-9]+: }
+send -- "0\r"
 expect eof
+set result [wait]
+exit [lindex $result 3]

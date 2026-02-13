@@ -12,5 +12,4 @@ tidy-git-changes() {
 
 cleanup-pair-state() {
 	rm -rf /tmp/pair
-	rm -f ~/.config/pair.json
 }

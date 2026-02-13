@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
 set env(ACCESSIBLE) true
-set timeout -1
+set timeout 10
 spawn pair commit
 match_max 100000
 expect -re ".*paring with\:(.|\n|\r)*"

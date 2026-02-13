@@ -15,7 +15,7 @@ setup-git-repo-for-pair() {
 	mkdir -p ~/.config
 	cat > ~/.config/pair.json << EOF
 {
-  "accessible": false,
+  "accessible": true,
   "coAuthors": {
     "Alice Smith": "alice@example.com",
     "Bob Jones": "bob@example.com", 
