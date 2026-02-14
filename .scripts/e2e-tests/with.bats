@@ -36,26 +36,26 @@ teardown() {
 
 @test "pair with: select single co-author" {
 	git checkout -b "$test_branch"
-	
+
 	expect_script="$BATS_TEST_DIRNAME/with-single.exp"
 	run "$expect_script"
 	assert_success
-	
+
 	# Check that coauthors file was created
 	today=$(date +%Y-%m-%d)
 	assert [ -f "/tmp/pair/$today/with" ]
 	run cat "/tmp/pair/$today/with"
 	assert_success
-	assert_output --partial "Co-authored-by: Alice Smith <alice@example.com>"
+	assert_output --partial '{"name":"Alice Smith","email":"alice@example.com"}'
 }
 
 @test "pair with: select multiple co-authors" {
 	git checkout -b "$test_branch"
-	
+
 	expect_script="$BATS_TEST_DIRNAME/with-multiple.exp"
 	run "$expect_script"
 	assert_success
-	
+
 	today=$(date +%Y-%m-%d)
 	run cat "/tmp/pair/$today/with"
 	assert_success
@@ -68,20 +68,20 @@ teardown() {
 	git checkout -b "$test_branch"
 	today=$(date +%Y-%m-%d)
 	mkdir -p "/tmp/pair/$today"
-	echo "old-author" > "/tmp/pair/$today/with"
-	
+	echo "old-author" >"/tmp/pair/$today/with"
+
 	expect_script="$BATS_TEST_DIRNAME/with-overwrite.exp"
 	run "$expect_script"
 	assert_success
-	
+
 	run cat "/tmp/pair/$today/with"
 	assert_success
-	assert_output --partial "Co-authored-by: Charlie Brown <charlie@example.com>"
+	assert_output --partial '{"name":"Charlie Brown","email":"charlie@example.com"}'
 }
 
 @test "pair with: no co-author argument" {
 	git checkout -b "$test_branch"
-	
+
 	expect_script="$BATS_TEST_DIRNAME/with-none.exp"
 	run "$expect_script"
 	assert_failure

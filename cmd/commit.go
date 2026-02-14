@@ -46,7 +46,7 @@ func NewCmdCommit(conf *config.Config) *cobra.Command {
 			}
 
 			if len(coAuthors) == 0 {
-				err := setCoAuthors(session, conf)
+				coAuthors, err = setCoAuthors(session, conf)
 				if err != nil && !errors.Is(err, prompt.ErrNoCoAuthorsSelected) {
 					return err
 				}

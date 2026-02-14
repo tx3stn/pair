@@ -5,13 +5,13 @@ set timeout 10
 spawn pair commit
 match_max 100000
 expect -re {.*Enter a number between [0-9]+ and [0-9]+: }
-send -- "1\r"
+send -- "2\r"
 expect -re {.*Enter a number between 0 and [0-9]+: }
 send -- "2\r"
 expect -re {.*Enter a number between 0 and [0-9]+: }
 send -- "0\r"
 expect -re {.*edit commit message:.*}
-send -- "fix(TICKET-789): test commit message\r"
+send -- "test commit message\r"
 expect eof
 set result [wait]
 exit [lindex $result 3]

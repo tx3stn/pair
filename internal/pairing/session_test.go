@@ -22,7 +22,7 @@ func TestSessionGetCoAuthors(t *testing.T) {
 		expectedError error
 	}{
 		"returns co-authors when file exists": {
-			date: time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC),
+			date: testDate,
 			expected: []git.CoAuthor{
 				{Name: "alice", Email: "alice@example.com"},
 				{Name: "bob", Email: "bob@example.com"},
@@ -101,7 +101,7 @@ func TestSessionGetTicketID(t *testing.T) {
 		expectedError error
 	}{
 		"returns ticket ID when file exists": {
-			date:          time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC),
+			date:          testDate,
 			expected:      "TICKET-123",
 			expectedError: nil,
 		},

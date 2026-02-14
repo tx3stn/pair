@@ -22,7 +22,7 @@ func EditCommitMessage(message string, coAuthors []git.CoAuthor, accessible bool
 			}
 		}
 
-		description = output.String()
+		description = strings.TrimSuffix(output.String(), "\n")
 	}
 
 	prompt := huh.NewText().
@@ -34,6 +34,9 @@ func EditCommitMessage(message string, coAuthors []git.CoAuthor, accessible bool
 		if err := prompt.RunAccessible(os.Stdout, os.Stdin); err != nil {
 			return "", ErrEditingCommitMessage
 		}
+
+		// Accessible mode removes the prefix.
+		edited = message + edited
 	} else {
 		if err := prompt.Run(); err != nil {
 			return "", ErrEditingCommitMessage

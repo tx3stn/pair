@@ -41,7 +41,7 @@ teardown() {
 	today=$(date +%Y-%m-%d)
 	mkdir -p "/tmp/pair/$today"
 	echo "TICKET-456" >"/tmp/pair/$today/on"
-	echo -e "Co-authored-by: Alice Smith <alice@example.com>\nCo-authored-by: Bob Jones <bob@example.com>" >"/tmp/pair/$today/with"
+	echo -e '{"name":"Alice Smith","email":"alice@example.com"}\n{"name":"Bob Jones","email":"bob@example.com"}' >"/tmp/pair/$today/with"
 
 	# Make a change to commit
 	echo "test change" >>README.md
@@ -52,11 +52,11 @@ teardown() {
 	assert_success
 
 	# Check the commit message includes ticket and co-authors
-	run git log -1 --pretty=format:"%s%n%b"
+	run git --no-pager log -1 --pretty=format:"%s%n%b"
 	assert_success
-	assert_output --partial "TICKET-456"
-	assert_output --partial "test commit message"
-	assert_output --partial "Co-authored-by:"
+	assert_output --partial "fix(TICKET-456): test commit message"
+	assert_output --partial "Co-authored-by: Alice Smith"
+	assert_output --partial "Co-authored-by: Bob Jones"
 }
 
 @test "pair commit: prompt for ticket and co-authors when not set" {
@@ -71,11 +71,10 @@ teardown() {
 	assert_success
 
 	# Check the commit message includes prompted values
-	run git log -1 --pretty=format:"%s%n%b"
+	run git --no-pager log -1 --pretty=format:"%s%n%b"
 	assert_success
-	assert_output --partial "PROMPT-123"
-	assert_output --partial "test commit message"
-	assert_output --partial "Co-authored-by:"
+	assert_output --partial "fix(PROMPT-123): test commit message"
+	assert_output --partial "Co-authored-by: Alice Smith"
 }
 
 @test "pair commit: prompt for co-authors when ticket set" {
@@ -95,11 +94,10 @@ teardown() {
 	assert_success
 
 	# Check the commit message includes ticket and prompted co-authors
-	run git log -1 --pretty=format:"%s%n%b"
+	run git --no-pager log -1 --pretty=format:"%s%n%b"
 	assert_success
-	assert_output --partial "TICKET-789"
-	assert_output --partial "test commit message"
-	assert_output --partial "Co-authored-by:"
+	assert_output --partial "feat(TICKET-789): test commit message"
+	assert_output --partial "Co-authored-by: Bob Jones"
 }
 
 @test "pair commit: no changes to commit" {

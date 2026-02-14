@@ -13,7 +13,7 @@ send -- "1\r"
 expect -re {.*Enter a number between 0 and [0-9]+: }
 send -- "0\r"
 expect -re {.*edit commit message:.*}
-send -- "fix(PROMPT-123): test commit message\r"
+send -- "test commit message\r"
 expect eof
 set result [wait]
 exit [lindex $result 3]
