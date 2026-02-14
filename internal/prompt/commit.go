@@ -1,18 +1,28 @@
 package prompt
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
 	"github.com/charmbracelet/huh"
+	"github.com/tx3stn/pair/internal/git"
 )
 
-func EditCommitMessage(message string, coAuthors []string, accessible bool) (string, error) {
+func EditCommitMessage(message string, coAuthors []git.CoAuthor, accessible bool) (string, error) {
 	edited := message
 
 	description := ""
+
 	if len(coAuthors) > 0 {
-		description = strings.Join(coAuthors, "\n")
+		var output strings.Builder
+		for _, coAuthor := range coAuthors {
+			if _, err := output.WriteString(coAuthor.Format() + "\n"); err != nil {
+				return "", fmt.Errorf("error formatting co-authors: %w", err)
+			}
+		}
+
+		description = output.String()
 	}
 
 	prompt := huh.NewText().
@@ -32,7 +42,7 @@ func EditCommitMessage(message string, coAuthors []string, accessible bool) (str
 
 	// Add co-authors back to the final message
 	if len(coAuthors) > 0 {
-		edited += "\n\n" + strings.Join(coAuthors, "\n")
+		edited += "\n\n" + description
 	}
 
 	return edited, nil

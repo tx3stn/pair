@@ -1,10 +1,12 @@
 package git
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type CoAuthor struct {
-	Name  string
-	Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func (c CoAuthor) Format() string {

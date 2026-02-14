@@ -14,6 +14,10 @@ const (
 	ErrWritingTicketID
 	// ErrCreatingDirectory is the error returned when creating directory fails.
 	ErrCreatingDirectory
+	// ErrMarshalingCoAuthor is the error returned when the co-author marshal fails.
+	ErrMarshalingCoAuthor
+	// ErrUnmarshalingCoAuthor is the error returned when the co-author unmarshal fails.
+	ErrUnmarshalingCoAuthor
 )
 
 // Error returns the message string for the given error.
@@ -29,6 +33,10 @@ func (e Error) Error() string {
 		return "error writing ticket ID"
 	case ErrCreatingDirectory:
 		return "error creating directory"
+	case ErrMarshalingCoAuthor:
+		return "error marshaling co-author"
+	case ErrUnmarshalingCoAuthor:
+		return "error unmarshaling co-author"
 	default:
 		return "unknown error"
 	}

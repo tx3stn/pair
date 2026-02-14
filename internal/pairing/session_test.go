@@ -18,20 +18,20 @@ func TestSessionGetCoAuthors(t *testing.T) {
 
 	testCases := map[string]struct {
 		date          time.Time
-		expected      []string
+		expected      []git.CoAuthor
 		expectedError error
 	}{
 		"returns co-authors when file exists": {
 			date: time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC),
-			expected: []string{
-				"Co-authored-by: alice <alice@example.com>",
-				"Co-authored-by: bob <bob@example.com>",
+			expected: []git.CoAuthor{
+				{Name: "alice", Email: "alice@example.com"},
+				{Name: "bob", Email: "bob@example.com"},
 			},
 			expectedError: nil,
 		},
-		"returns empty string when file does not exist": {
+		"returns empty slice when file does not exist": {
 			date:          time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC),
-			expected:      []string{},
+			expected:      []git.CoAuthor{},
 			expectedError: nil,
 		},
 	}
@@ -62,7 +62,8 @@ func TestSessionSetCoAuthors(t *testing.T) {
 				{Name: "alice", Email: "alice@example.com"},
 				{Name: "bob", Email: "bob@example.com"},
 			},
-			expected:      "Co-authored-by: alice <alice@example.com>\nCo-authored-by: bob <bob@example.com>",
+			expected: `{"name":"alice","email":"alice@example.com"}
+{"name":"bob","email":"bob@example.com"}`,
 			expectedError: nil,
 		},
 		"sets empty co-authors successfully": {
@@ -77,14 +78,14 @@ func TestSessionSetCoAuthors(t *testing.T) {
 			t.Parallel()
 
 			session := pairing.NewSession(t.TempDir(), testDate)
-			_, err := session.SetCoAuthors(tc.coAuthors)
+			err := session.SetCoAuthors(tc.coAuthors)
 			require.ErrorIs(t, err, tc.expectedError)
 
 			if tc.expectedError != nil {
 				return
 			}
 
-			content, readErr := os.ReadFile(session.GetPath("with"))
+			content, readErr := os.ReadFile(session.WithFile)
 			require.NoError(t, readErr)
 			assert.Equal(t, tc.expected, string(content))
 		})
@@ -153,7 +154,7 @@ func TestSessionSetTicketID(t *testing.T) {
 				return
 			}
 
-			content, readErr := os.ReadFile(session.GetPath("on"))
+			content, readErr := os.ReadFile(session.OnFile)
 			require.NoError(t, readErr)
 			assert.Equal(t, tc.ticketID, string(content))
 		})

@@ -15,9 +15,7 @@ func NewCmdWith(conf *config.Config) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			session := pairing.NewSession(pairing.DataDir, time.Now())
 
-			_, err := setCoAuthors(session, conf)
-
-			return err
+			return setCoAuthors(session, conf)
 		},
 		Short: "Select who you are pairing with",
 		Use:   "with",
@@ -26,22 +24,21 @@ func NewCmdWith(conf *config.Config) *cobra.Command {
 	return cmd
 }
 
-func setCoAuthors(session pairing.Session, conf *config.Config) ([]string, error) {
+func setCoAuthors(session pairing.Session, conf *config.Config) error {
 	coAuthors := prompt.NewCoAuthorSelector(conf.CoAuthors, conf.AccessibleMode)
 
 	selected, err := coAuthors.Select()
 	if err != nil {
-		return []string{}, err
+		return err
 	}
 
 	for _, co := range selected {
 		slog.Debug("added co-author", "coAuthor", co.Format())
 	}
 
-	coAuth, err := session.SetCoAuthors(selected)
-	if err != nil {
-		return []string{}, err
+	if err := session.SetCoAuthors(selected); err != nil {
+		return err
 	}
 
-	return coAuth, err
+	return nil
 }
