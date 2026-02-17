@@ -3,8 +3,8 @@ name: goreleaser
 on:
   workflow_run:
     workflows:
-      - build-and-test
-      - lint
+      - go build and test
+      - golangci-lint
     types:
       - completed
     branches:
