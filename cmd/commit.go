@@ -14,7 +14,9 @@ import (
 )
 
 func NewCmdCommit(conf *config.Config) *cobra.Command {
-	cmd := &cobra.Command{
+	short := "commit your work"
+
+	return &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 
@@ -44,8 +46,8 @@ func NewCmdCommit(conf *config.Config) *cobra.Command {
 				return err
 			}
 
-			if len(coAuthors) == 0 {
-				coAuthors, err = setCoAuthors(session, conf)
+			if len(coAuthors) == 0 || (len(args) > 0 && args[0] == "+") {
+				coAuthors, err = setCoAuthors(session, conf, true)
 				if err != nil && !errors.Is(err, prompt.ErrNoCoAuthorsSelected) {
 					return err
 				}
@@ -72,9 +74,18 @@ func NewCmdCommit(conf *config.Config) *cobra.Command {
 
 			return nil
 		},
-		Short: "Commit your work",
+		Short: short,
 		Use:   "commit",
-	}
+		Long: short + `
 
-	return cmd
+if you already have an active pairing session those values will be
+automatically used
+
+if you don't, you will be prompted to enter ticket id and select co-authors
+
+to add an additional co-author to the current selection pass the '+' arg, e.g.:
+
+pair commit +
+`,
+	}
 }

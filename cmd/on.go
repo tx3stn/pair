@@ -10,7 +10,9 @@ import (
 )
 
 func NewCmdOn(conf *config.Config) *cobra.Command {
-	cmd := &cobra.Command{
+	short := "specify the ticket you are pairing on"
+
+	return &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
 			session := pairing.NewSession(pairing.DataDir)
 
@@ -24,11 +26,17 @@ func NewCmdOn(conf *config.Config) *cobra.Command {
 
 			return err
 		},
-		Short: "Specify the ticket you are pairing on",
+		Short: short,
 		Use:   "on",
-	}
+		Long: short + `
 
-	return cmd
+you can pass the ticket id directly, e.g.
+
+pair on TICKET-1234
+
+or run the command without any args for an interactive prompt
+`,
+	}
 }
 
 func setTicketID(session *pairing.Session, conf *config.Config, ticketID string) (string, error) {

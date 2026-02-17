@@ -9,7 +9,7 @@ import (
 )
 
 func NewCmdDone(_ *config.Config) *cobra.Command {
-	cmd := &cobra.Command{
+	return &cobra.Command{
 		RunE: func(cmd *cobra.Command, args []string) error {
 			session := pairing.NewSession(pairing.DataDir)
 
@@ -21,9 +21,7 @@ func NewCmdDone(_ *config.Config) *cobra.Command {
 
 			return nil
 		},
-		Short: "All done - remove the active pairing state",
+		Short: "all done - remove the active pairing state",
 		Use:   "done",
 	}
-
-	return cmd
 }
