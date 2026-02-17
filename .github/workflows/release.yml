@@ -1,7 +1,12 @@
 name: goreleaser
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - build-and-test
+      - lint
+    types:
+      - completed
     branches:
       - main
 
@@ -12,6 +17,7 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v6
         with:
