@@ -18,8 +18,8 @@
 
 ## Why?
 
-I'm constantly forgetting what ticket I'm working on so need to find it at commit time,
-then manually add the co-authors each commit.
+I hate seacrhing for the ticket id I'm working on at commit time, so I can include
+it in the commit message.
 
 Now I don't need to worry about that, I can set the values with `pair` and have
 them automatically added to my commits each time.

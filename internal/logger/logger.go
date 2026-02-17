@@ -82,9 +82,9 @@ func getLevelText(level slog.Level) string {
 	case slog.LevelDebug:
 		return "DEBUG"
 	case slog.LevelInfo:
-		return " INFO"
+		return "INFO"
 	case slog.LevelWarn:
-		return " WARN"
+		return "WARN"
 	case slog.LevelError:
 		return "ERROR"
 	default:

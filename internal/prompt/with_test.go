@@ -19,7 +19,7 @@ func TestCoAuthorSelect(t *testing.T) {
 		expectedError error
 	}{
 		"returns selected co-authors": {
-			selectFunc: func(m map[string]string, b bool) ([]string, error) {
+			selectFunc: func(m map[string]string, b bool, s []string) ([]string, error) {
 				return []string{"anne", "bob"}, nil
 			},
 			expected: []git.CoAuthor{
@@ -29,14 +29,14 @@ func TestCoAuthorSelect(t *testing.T) {
 			expectedError: nil,
 		},
 		"returns error when no co-authors selected": {
-			selectFunc: func(m map[string]string, b bool) ([]string, error) {
+			selectFunc: func(m map[string]string, b bool, s []string) ([]string, error) {
 				return []string{}, nil
 			},
 			expected:      []git.CoAuthor{},
 			expectedError: prompt.ErrNoCoAuthorsSelected,
 		},
 		"returns error when selector errors": {
-			selectFunc: func(m map[string]string, b bool) ([]string, error) {
+			selectFunc: func(m map[string]string, b bool, s []string) ([]string, error) {
 				return []string{}, errors.New("forced error")
 			},
 			expected:      []git.CoAuthor{},
@@ -57,7 +57,7 @@ func TestCoAuthorSelect(t *testing.T) {
 				},
 			}
 
-			actual, err := coAuthors.Select()
+			actual, err := coAuthors.Select([]git.CoAuthor{})
 			require.ErrorIs(t, err, tc.expectedError)
 			assert.Equal(t, tc.expected, actual)
 		})

@@ -28,9 +28,10 @@ func NewApp() *cobra.Command {
 
 			return nil
 		},
-		Short:   "Your simple pair commit helper.",
-		Use:     "pair",
-		Version: Version,
+		Short:        "Your simple pair commit helper.",
+		SilenceUsage: true,
+		Use:          "pair",
+		Version:      Version,
 	}
 
 	rootCmd.AddCommand(NewCmdCommit(cfg))
