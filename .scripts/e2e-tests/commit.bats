@@ -37,11 +37,9 @@ teardown() {
 @test "pair commit: basic commit with ticket and co-authors" {
 	git checkout -b "$test_branch"
 
-	# Set up pair state in /tmp/pair/<DATE>/
-	today=$(date +%Y-%m-%d)
-	mkdir -p "/tmp/pair/$today"
-	echo "TICKET-456" >"/tmp/pair/$today/on"
-	echo -e '{"name":"Alice Smith","email":"alice@example.com"}\n{"name":"Bob Jones","email":"bob@example.com"}' >"/tmp/pair/$today/with"
+	mkdir -p "/tmp/pair"
+	echo "TICKET-456" >"/tmp/pair/on"
+	echo -e '{"name":"Alice Smith","email":"alice@example.com"}\n{"name":"Bob Jones","email":"bob@example.com"}' >"/tmp/pair/with"
 
 	# Make a change to commit
 	echo "test change" >>README.md
@@ -80,10 +78,8 @@ teardown() {
 @test "pair commit: prompt for co-authors when ticket set" {
 	git checkout -b "$test_branch"
 
-	# Set up only ticket
-	today=$(date +%Y-%m-%d)
-	mkdir -p "/tmp/pair/$today"
-	echo "TICKET-789" >"/tmp/pair/$today/on"
+	mkdir -p "/tmp/pair"
+	echo "TICKET-789" >"/tmp/pair/on"
 
 	# Make a change to commit
 	echo "test change" >>README.md

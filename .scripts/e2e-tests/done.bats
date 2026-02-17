@@ -36,27 +36,24 @@ teardown() {
 
 @test "pair done: clear ticket and co-authors" {
 	git checkout -b "$test_branch"
-	
-	# Set up pair state in /tmp/pair/<DATE>/
-	today=$(date +%Y-%m-%d)
-	mkdir -p "/tmp/pair/$today"
-	echo "TICKET-123" > "/tmp/pair/$today/on"
-	echo "Alice Smith <alice@example.com>" > "/tmp/pair/$today/with"
-	
+
+	mkdir -p "/tmp/pair"
+	echo "TICKET-123" >"/tmp/pair/on"
+	echo "Alice Smith <alice@example.com>" >"/tmp/pair/with"
+
 	run pair done
 	assert_success
-	
-	# Check that directory is removed
-	assert [ ! -d "/tmp/pair/$today" ]
+
+	assert [ ! -f "/tmp/pair/on" ]
+	assert [ ! -f "/tmp/pair/with" ]
 }
 
 @test "pair done: no existing state files" {
 	git checkout -b "$test_branch"
-	
+
 	run pair done
 	assert_success
-	
-	# Should not fail even if directory doesn't exist
-	today=$(date +%Y-%m-%d)
-	assert [ ! -d "/tmp/pair/$today" ]
+
+	assert [ ! -f "/tmp/pair/on" ]
+	assert [ ! -f "/tmp/pair/with" ]
 }

@@ -41,10 +41,8 @@ teardown() {
 	run "$expect_script"
 	assert_success
 
-	# Check that coauthors file was created
-	today=$(date +%Y-%m-%d)
-	assert [ -f "/tmp/pair/$today/with" ]
-	run cat "/tmp/pair/$today/with"
+	assert [ -f "/tmp/pair/with" ]
+	run cat "/tmp/pair/with"
 	assert_success
 	assert_output --partial '{"name":"Alice Smith","email":"alice@example.com"}'
 }
@@ -56,8 +54,7 @@ teardown() {
 	run "$expect_script"
 	assert_success
 
-	today=$(date +%Y-%m-%d)
-	run cat "/tmp/pair/$today/with"
+	run cat "/tmp/pair/with"
 	assert_success
 	# Should contain both authors (order may vary)
 	assert_output --partial "Alice Smith"
@@ -66,15 +63,14 @@ teardown() {
 
 @test "pair with: overwrite existing co-authors" {
 	git checkout -b "$test_branch"
-	today=$(date +%Y-%m-%d)
-	mkdir -p "/tmp/pair/$today"
-	echo "old-author" >"/tmp/pair/$today/with"
+	mkdir -p "/tmp/pair/"
+	echo '{"name":"old value","email":"old@example.com"}' >"/tmp/pair/with"
 
 	expect_script="$BATS_TEST_DIRNAME/with-overwrite.exp"
 	run "$expect_script"
 	assert_success
 
-	run cat "/tmp/pair/$today/with"
+	run cat "/tmp/pair/with"
 	assert_success
 	assert_output --partial '{"name":"Charlie Brown","email":"charlie@example.com"}'
 }

@@ -38,37 +38,32 @@ teardown() {
 	git checkout -b "$test_branch"
 	run pair on TICKET-123
 	assert_success
-	
-	# Check that ticket file was created in /tmp/pair/<DATE>/on
-	today=$(date +%Y-%m-%d)
-	assert [ -f "/tmp/pair/$today/on" ]
-	ticket=$(cat "/tmp/pair/$today/on")
+
+	assert [ -f "/tmp/pair/on" ]
+	ticket=$(cat "/tmp/pair/on")
 	assert_equal "TICKET-123" "$ticket"
 }
 
 @test "pair on: overwrite existing ticket" {
 	git checkout -b "$test_branch"
-	today=$(date +%Y-%m-%d)
-	mkdir -p "/tmp/pair/$today"
-	echo "OLD-TICKET" > "/tmp/pair/$today/on"
-	
+	mkdir -p "/tmp/pair/"
+	echo "OLD-TICKET" >"/tmp/pair/on"
+
 	run pair on NEW-TICKET
 	assert_success
-	
-	ticket=$(cat "/tmp/pair/$today/on")
+
+	ticket=$(cat "/tmp/pair/on")
 	assert_equal "NEW-TICKET" "$ticket"
 }
 
 @test "pair on: no ticket argument" {
 	git checkout -b "$test_branch"
-	
+
 	expect_script="$BATS_TEST_DIRNAME/on-interactive.exp"
 	run "$expect_script"
 	assert_success
-	
-	# Check that ticket was set
-	today=$(date +%Y-%m-%d)
-	assert [ -f "/tmp/pair/$today/on" ]
-	ticket=$(cat "/tmp/pair/$today/on")
+
+	assert [ -f "/tmp/pair/on" ]
+	ticket=$(cat "/tmp/pair/on")
 	assert_equal "TEST-999" "$ticket"
 }
