@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/tx3stn/pair/internal/git"
 )
@@ -16,7 +15,6 @@ import (
 const DataDir = "/tmp/pair"
 
 type Session struct {
-	date       time.Time
 	parentDir  string
 	on         string
 	with       []git.CoAuthor
@@ -25,29 +23,40 @@ type Session struct {
 	OnFile     string
 }
 
-func NewSession(dir string, currDate time.Time) Session {
-	sessionDir := filepath.Join(dir, currDate.Format("2006-01-02"))
-
-	return Session{
-		date:       currDate,
+func NewSession(dir string) *Session {
+	return &Session{
 		parentDir:  dir,
 		on:         "",
 		with:       []git.CoAuthor{},
-		SessionDir: sessionDir,
-		WithFile:   filepath.Join(sessionDir, "with"),
-		OnFile:     filepath.Join(sessionDir, "on"),
+		SessionDir: dir,
+		WithFile:   filepath.Join(dir, "with"),
+		OnFile:     filepath.Join(dir, "on"),
 	}
 }
 
-func (s Session) Clean() error {
-	if err := os.RemoveAll(s.SessionDir); err != nil {
-		return fmt.Errorf("error removing directory %s: %w", s.SessionDir, err)
+func (s *Session) Clean() error {
+	err := os.Remove(s.WithFile)
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	if err != nil {
+		return fmt.Errorf("error removing file %s: %w", s.WithFile, err)
+	}
+
+	err = os.Remove(s.OnFile)
+	if os.IsNotExist(err) {
+		return nil
+	}
+
+	if err != nil {
+		return fmt.Errorf("error removing file %s: %w", s.OnFile, err)
 	}
 
 	return nil
 }
 
-func (s Session) GetCoAuthors() ([]git.CoAuthor, error) {
+func (s *Session) GetCoAuthors() ([]git.CoAuthor, error) {
 	data, err := os.ReadFile(s.WithFile)
 	if os.IsNotExist(err) {
 		return []git.CoAuthor{}, nil
@@ -79,7 +88,7 @@ func (s Session) GetCoAuthors() ([]git.CoAuthor, error) {
 	return s.with, nil
 }
 
-func (s Session) SetCoAuthors(coAuthors []git.CoAuthor) error {
+func (s *Session) SetCoAuthors(coAuthors []git.CoAuthor) error {
 	s.with = coAuthors
 
 	if err := os.MkdirAll(s.SessionDir, 0o750); err != nil {
@@ -108,7 +117,7 @@ func (s Session) SetCoAuthors(coAuthors []git.CoAuthor) error {
 	return nil
 }
 
-func (s Session) GetTicketID() (string, error) {
+func (s *Session) GetTicketID() (string, error) {
 	data, err := os.ReadFile(s.OnFile)
 	if os.IsNotExist(err) {
 		return "", nil
@@ -123,7 +132,7 @@ func (s Session) GetTicketID() (string, error) {
 	return s.on, nil
 }
 
-func (s Session) SetTicketID(ticketID string) error {
+func (s *Session) SetTicketID(ticketID string) error {
 	s.on = ticketID
 
 	if err := os.MkdirAll(s.SessionDir, 0o750); err != nil {

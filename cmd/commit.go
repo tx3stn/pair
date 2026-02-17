@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/tx3stn/pair/internal/config"
@@ -26,7 +25,7 @@ func NewCmdCommit(conf *config.Config) *cobra.Command {
 				return err
 			}
 
-			session := pairing.NewSession(pairing.DataDir, time.Now())
+			session := pairing.NewSession(pairing.DataDir)
 
 			ticketID, err := session.GetTicketID()
 			if err != nil {

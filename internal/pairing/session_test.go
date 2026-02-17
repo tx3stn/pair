@@ -3,7 +3,6 @@ package pairing_test
 import (
 	"os"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -11,18 +10,16 @@ import (
 	"github.com/tx3stn/pair/internal/pairing"
 )
 
-var testDate = time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC)
-
 func TestSessionGetCoAuthors(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {
-		date          time.Time
+		sessionDir    string
 		expected      []git.CoAuthor
 		expectedError error
 	}{
 		"returns co-authors when file exists": {
-			date: testDate,
+			sessionDir: "./testdata",
 			expected: []git.CoAuthor{
 				{Name: "alice", Email: "alice@example.com"},
 				{Name: "bob", Email: "bob@example.com"},
@@ -30,7 +27,7 @@ func TestSessionGetCoAuthors(t *testing.T) {
 			expectedError: nil,
 		},
 		"returns empty slice when file does not exist": {
-			date:          time.Date(2026, 1, 20, 0, 0, 0, 0, time.UTC),
+			sessionDir:    "./foo",
 			expected:      []git.CoAuthor{},
 			expectedError: nil,
 		},
@@ -40,7 +37,7 @@ func TestSessionGetCoAuthors(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			session := pairing.NewSession("./testdata", tc.date)
+			session := pairing.NewSession(tc.sessionDir)
 
 			actual, err := session.GetCoAuthors()
 			require.ErrorIs(t, err, tc.expectedError)
@@ -77,7 +74,7 @@ func TestSessionSetCoAuthors(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			session := pairing.NewSession(t.TempDir(), testDate)
+			session := pairing.NewSession(t.TempDir())
 			err := session.SetCoAuthors(tc.coAuthors)
 			require.ErrorIs(t, err, tc.expectedError)
 
@@ -96,17 +93,17 @@ func TestSessionGetTicketID(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {
-		date          time.Time
+		sessionDir    string
 		expected      string
 		expectedError error
 	}{
 		"returns ticket ID when file exists": {
-			date:          testDate,
+			sessionDir:    "./testdata",
 			expected:      "TICKET-123",
 			expectedError: nil,
 		},
 		"returns empty string when file does not exist": {
-			date:          time.Date(2026, 1, 4, 0, 0, 0, 0, time.UTC),
+			sessionDir:    "./foo",
 			expected:      "",
 			expectedError: nil,
 		},
@@ -116,7 +113,7 @@ func TestSessionGetTicketID(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			session := pairing.NewSession("./testdata", tc.date)
+			session := pairing.NewSession(tc.sessionDir)
 
 			actual, err := session.GetTicketID()
 			require.ErrorIs(t, err, tc.expectedError)
@@ -146,7 +143,7 @@ func TestSessionSetTicketID(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			session := pairing.NewSession(t.TempDir(), testDate)
+			session := pairing.NewSession(t.TempDir())
 			err := session.SetTicketID(tc.ticketID)
 			require.ErrorIs(t, err, tc.expectedError)
 
