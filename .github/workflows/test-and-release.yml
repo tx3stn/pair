@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - <<: *setup-go
+      - *setup-go
       - uses: golangci/golangci-lint-action@v9
         name: golangci-lint
         with:
@@ -71,7 +71,7 @@ jobs:
             git tag -a "${VERSION}" -m "Release ${VERSION}"
             git push origin "${VERSION}"
           fi
-      - <<: *setup-go
+      - *setup-go
       # - uses: docker/login-action@v3
       #   with:
       #     registry: ghcr.io
