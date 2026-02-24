@@ -24,6 +24,7 @@ func Commit(ctx context.Context, msg string, args string) (string, error) {
 }
 
 func gitCommand(ctx context.Context, args ...string) (string, error) {
+	// #nosec G204 -- args are intentional git CLI flags/subcommands
 	cmd := exec.CommandContext(ctx, "git", args...)
 
 	var stdOut bytes.Buffer
