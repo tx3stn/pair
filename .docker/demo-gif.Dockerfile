@@ -7,7 +7,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/tx3stn/pair/cmd.Version=vhs-demo" -o pair
 
-FROM ghcr.io/charmbracelet/vhs:v0.10.0
+FROM ghcr.io/charmbracelet/vhs:v0.11.0
 
 RUN rm -rf /var/lib/apt/lists/* && \
 	apt-get update --allow-releaseinfo-change && \
