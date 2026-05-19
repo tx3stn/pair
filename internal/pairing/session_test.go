@@ -2,6 +2,7 @@ package pairing_test
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -154,6 +155,75 @@ func TestSessionSetTicketID(t *testing.T) {
 			content, readErr := os.ReadFile(session.OnFile)
 			require.NoError(t, readErr)
 			assert.Equal(t, tc.ticketID, string(content))
+		})
+	}
+}
+
+func TestSessionCurrent(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		setup             func(t *testing.T) string
+		expectedTicket    string
+		expectedCoAuthors []git.CoAuthor
+		expectedError     error
+	}{
+		"returns current session when both files exist": {
+			setup:          func(_ *testing.T) string { return "./testdata" },
+			expectedTicket: "TICKET-123",
+			expectedCoAuthors: []git.CoAuthor{
+				{Name: "alice", Email: "alice@example.com"},
+				{Name: "bob", Email: "bob@example.com"},
+			},
+			expectedError: nil,
+		},
+		"returns empty session when no files exist": {
+			setup:             func(_ *testing.T) string { return "./foo" },
+			expectedTicket:    "",
+			expectedCoAuthors: []git.CoAuthor{},
+			expectedError:     nil,
+		},
+		"returns ErrReadingTicketID when ticket file is unreadable": {
+			setup: func(t *testing.T) string {
+				t.Helper()
+
+				dir := t.TempDir()
+				require.NoError(t, os.Mkdir(filepath.Join(dir, "on"), 0o750))
+
+				return dir
+			},
+			expectedTicket:    "",
+			expectedCoAuthors: []git.CoAuthor{},
+			expectedError:     pairing.ErrReadingTicketID,
+		},
+		"returns ErrReadingCoAuthors when with file contains invalid JSON": {
+			setup: func(t *testing.T) string {
+				t.Helper()
+
+				dir := t.TempDir()
+				require.NoError(
+					t,
+					os.WriteFile(filepath.Join(dir, "with"), []byte("not valid json"), 0o600),
+				)
+
+				return dir
+			},
+			expectedTicket:    "",
+			expectedCoAuthors: []git.CoAuthor{},
+			expectedError:     pairing.ErrReadingCoAuthors,
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			session := pairing.NewSession(tc.setup(t))
+
+			ticket, coAuthors, err := session.Current()
+			require.ErrorIs(t, err, tc.expectedError)
+			assert.Equal(t, tc.expectedTicket, ticket)
+			assert.Equal(t, tc.expectedCoAuthors, coAuthors)
 		})
 	}
 }

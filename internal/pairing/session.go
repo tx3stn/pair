@@ -145,3 +145,17 @@ func (s *Session) SetTicketID(ticketID string) error {
 
 	return nil
 }
+
+func (s *Session) Current() (string, []git.CoAuthor, error) {
+	ticket, err := s.GetTicketID()
+	if err != nil {
+		return "", []git.CoAuthor{}, fmt.Errorf("%w: %w", ErrReadingTicketID, err)
+	}
+
+	coAuthors, err := s.GetCoAuthors()
+	if err != nil {
+		return "", []git.CoAuthor{}, fmt.Errorf("%w: %w", ErrReadingCoAuthors, err)
+	}
+
+	return ticket, coAuthors, nil
+}

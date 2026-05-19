@@ -18,6 +18,8 @@ const (
 	ErrMarshalingCoAuthor
 	// ErrUnmarshalingCoAuthor is the error returned when the co-author unmarshal fails.
 	ErrUnmarshalingCoAuthor
+	// ErrGettingCurrentSession is the error returned when requests getting the curret session fail.
+	ErrGettingCurrentSession
 )
 
 // Error returns the message string for the given error.
@@ -37,6 +39,8 @@ func (e Error) Error() string {
 		return "error marshaling co-author"
 	case ErrUnmarshalingCoAuthor:
 		return "error unmarshaling co-author"
+	case ErrGettingCurrentSession:
+		return "error getting current session"
 	default:
 		return "unknown error"
 	}
