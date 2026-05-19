@@ -10,6 +10,7 @@ linters:
     - noinlineerr  # we use inline errors
     - unqueryvet  # not using SQL
     - wsl  # deprecated using wsl_v5
+    - gomodguard # deprecaated
   exclusions:
     rules:
       - path: '.*main\.go'
@@ -34,6 +35,7 @@ linters:
           - gochecknoglobals
           - maintidx
           - noctx
+          - goconst
       - path: 'internal/flags/vars.go'
         linters:
           - gochecknoglobals

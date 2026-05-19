@@ -84,9 +84,13 @@ to clear the session data temp files.
 
 ![pair-done-demo](https://github.com/user-attachments/assets/1664d5e6-1493-4393-85c5-22e073f07fe2)
 
+### `new`
+
+Start a new pairing session overwriting your current values.
+
 ## Configuration
 
-By default `pair` checks for a config file called `pair.json` in your `$XDG_CONFIG_DIR`, 
+By default `pair` checks for a config file called `pair.json` in your `$XDG_CONFIG_DIR`,
 or `$HOME/.config` in a directory e.g: `$HOME/.config/pair.json`.
 
 ### Schema

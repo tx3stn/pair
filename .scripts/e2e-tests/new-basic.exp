@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout 10
+spawn pair new
+match_max 100000
+expect -re {.*Input a number between 0 and [0-9]+: }
+send -- "1\r"
+expect -re {.*Input a number between 0 and [0-9]+: }
+send -- "0\r"
+expect -re ".*enter ticket ID\:(.|\n|\r)*"
+send -- "NEW-123\r"
+expect eof
+set result [wait]
+exit [lindex $result 3]
