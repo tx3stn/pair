@@ -35,6 +35,7 @@ func NewApp() *cobra.Command {
 	}
 
 	rootCmd.AddCommand(NewCmdCommit(cfg))
+	rootCmd.AddCommand(NewCmdCur(cfg))
 	rootCmd.AddCommand(NewCmdDone(cfg))
 	rootCmd.AddCommand(NewCmdNew(cfg))
 	rootCmd.AddCommand(NewCmdOn(cfg))

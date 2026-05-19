@@ -88,6 +88,10 @@ to clear the session data temp files.
 
 Start a new pairing session overwriting your current values.
 
+### `cur`
+
+Show the current pairng session values.
+
 ## Configuration
 
 By default `pair` checks for a config file called `pair.json` in your `$XDG_CONFIG_DIR`,
