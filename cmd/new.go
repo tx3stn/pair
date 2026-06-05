@@ -19,7 +19,7 @@ func NewCmdNew(conf *config.Config) *cobra.Command {
 			}
 
 			_, err := setCoAuthors(session, conf, false)
-			if !errors.Is(err, prompt.ErrNoCoAuthorsSelected) {
+			if err != nil && !errors.Is(err, prompt.ErrNoCoAuthorsSelected) {
 				return err
 			}
 
