@@ -13,5 +13,6 @@
 		"docs",
 		"test"
 	],
+	"suggestedCoAuthorEmail": "{{.FirstName}}.{{.LastName}}@example.com",
 	"ticketPrefix": "TICKET-"
 }

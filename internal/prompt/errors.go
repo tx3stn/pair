@@ -18,6 +18,10 @@ const (
 	ErrEditingCommitMessage
 	// ErrPromptingTicketID is the error returned when prompting for ticket ID fails.
 	ErrPromptingTicketID
+	// ErrPromptingCoAuthor is the error returned when prompting for a new co-author fails.
+	ErrPromptingCoAuthor
+	// ErrEmptyValue is the error returned when a required prompt value is left blank.
+	ErrEmptyValue
 )
 
 // Error returns the message string for the given error.
@@ -35,6 +39,10 @@ func (e Error) Error() string {
 		return "error editing commit message"
 	case ErrPromptingTicketID:
 		return "error prompting for ticket ID"
+	case ErrPromptingCoAuthor:
+		return "error prompting for co-author"
+	case ErrEmptyValue:
+		return "value cannot be empty"
 	default:
 		return "unknown error"
 	}
