@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+set env(ACCESSIBLE) true
+set timeout 10
+spawn pair add
+match_max 100000
+expect -re ".*first name\:(.|\n|\r)*"
+send -- "Jane\r"
+expect -re ".*last name\:(.|\n|\r)*"
+send -- "Doe\r"
+expect -re ".*email\:(.|\n|\r)*"
+send -- "jane.doe@example.com\r"
+expect eof
+set result [wait]
+exit [lindex $result 3]

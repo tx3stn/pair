@@ -7,6 +7,10 @@ const (
 	ErrReadingConfigFile
 	// ErrUnmashallingJSON is the error returned when the provided config file can't be unmarshalled.
 	ErrUnmashallingJSON
+	// ErrMarshallingJSON is the error returned when the config can't be marshalled to JSON.
+	ErrMarshallingJSON
+	// ErrWritingConfigFile is the error returned when the config file can't be written.
+	ErrWritingConfigFile
 )
 
 // Error is the error type.
@@ -23,6 +27,12 @@ func (e Error) Error() string {
 
 	case ErrUnmashallingJSON:
 		return "error unmarshalling JSON config file"
+
+	case ErrMarshallingJSON:
+		return "error marshalling JSON config file"
+
+	case ErrWritingConfigFile:
+		return "error writing config file"
 
 	default:
 		return "unknown error"

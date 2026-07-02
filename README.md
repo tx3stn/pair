@@ -92,6 +92,15 @@ Start a new pairing session overwriting your current values.
 
 Show the current pairng session values.
 
+### `add`
+
+Add a co-author to your config file.
+
+Prompts for the co-author's first name, last name and email, then writes them to
+the `coAuthors` map in your config file. Set `suggestedCoAuthorEmail` in your
+config to have the email prompt pre-filled with a suggestion you can accept or
+edit (see [Suggesting co-author emails](#suggesting-co-author-emails)).
+
 ## Configuration
 
 By default `pair` checks for a config file called `pair.json` in your `$XDG_CONFIG_DIR`,
@@ -105,3 +114,21 @@ You can see an example of the config file format in the
 > [!TIP]
 > Make sure you add the `$schema` keyword to the top of your config file to
 > for in editor validation and descriptions of what fields are used for.
+
+### Suggesting co-author emails
+
+The optional `suggestedCoAuthorEmail` field is a go template string used by the
+`add` command to pre-fill the email prompt with a suggestion built from the name
+you enter (which you can still accept or edit).
+
+The following fields are available:
+
+- `FirstName`
+- `FirstInitial`
+- `LastName`
+- `LastInitial`
+
+For example, with
+`"suggestedCoAuthorEmail": "{{.FirstInitial}}{{.LastName}}@example.com"`, entering
+the name `Jane Doe` suggests `jdoe@example.com`. The rendered value is always
+lowercased. Leave the field out (or empty) to start the email prompt blank.

@@ -15,4 +15,3 @@ echo "$summary" | while IFS= read -r line; do
 	coverage=$(echo "$line" | cut -f4 | cut -d' ' -f 2)
 	echo "| $pkg | $coverage |"
 done
-one

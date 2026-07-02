@@ -14,7 +14,7 @@ import (
 var Version string
 
 func NewApp() *cobra.Command {
-	cfg, err := config.Get()
+	cfg, _, err := config.Get()
 	if err != nil {
 		cfg = &config.Config{}
 	}
@@ -34,6 +34,7 @@ func NewApp() *cobra.Command {
 		Version:      Version,
 	}
 
+	rootCmd.AddCommand(NewCmdAdd(cfg))
 	rootCmd.AddCommand(NewCmdCommit(cfg))
 	rootCmd.AddCommand(NewCmdCur(cfg))
 	rootCmd.AddCommand(NewCmdDone(cfg))

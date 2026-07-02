@@ -38,6 +38,10 @@
 					},
 					"minItems": 1
 				},
+				"suggestedCoAuthorEmail": {
+					"description": "Optional Go text/template used to suggest a co-author's email from their name in the 'add' command. Available fields: FirstName, LastName, FirstInitial, LastInitial. For example: {{.FirstInitial}}{{.LastName}}@example.com. The rendered result is lowercased.",
+					"type": "string"
+				},
 				"ticketPrefix": {
 					"description": "Prefix added to ticket IDs when missing.",
 					"type": "string"

@@ -10,35 +10,39 @@ import (
 
 // Config represents the options defined in the config file.
 type Config struct {
-	AccessibleMode bool              `json:"accessible"`
-	CoAuthors      map[string]string `json:"coAuthors"`
-	CommitArgs     string            `json:"commitArgs"`
-	Prefixes       []string          `json:"prefixes"`
-	TicketPrefix   string            `json:"ticketPrefix"`
+	// Schema is the optional "$schema" key used for in-editor validation. It is
+	// modelled here so it is preserved when the config is written back to disk.
+	Schema                 string            `json:"$schema,omitempty"`
+	AccessibleMode         bool              `json:"accessible"`
+	CoAuthors              map[string]string `json:"coAuthors"`
+	CommitArgs             string            `json:"commitArgs"`
+	Prefixes               []string          `json:"prefixes"`
+	SuggestedCoAuthorEmail string            `json:"suggestedCoAuthorEmail,omitempty"`
+	TicketPrefix           string            `json:"ticketPrefix"`
 }
 
 // Get returns the config read from the file.
-func Get() (*Config, error) {
+func Get() (*Config, string, error) {
 	file, err := FindConfigFile()
 	if err != nil {
-		return &Config{}, fmt.Errorf("error checking for existence of config file: %w", err)
+		return &Config{}, "", fmt.Errorf("error checking for existence of config file: %w", err)
 	}
 
 	if file == "" {
-		return &Config{}, ErrConfigNotFound
+		return &Config{}, "", ErrConfigNotFound
 	}
 
 	content, err := os.ReadFile(filepath.Clean(file))
 	if err != nil {
-		return &Config{}, fmt.Errorf("%w: %w", ErrReadingConfigFile, err)
+		return &Config{}, "", fmt.Errorf("%w: %w", ErrReadingConfigFile, err)
 	}
 
 	var conf Config
 	if err = json.Unmarshal(content, &conf); err != nil {
-		return &Config{}, fmt.Errorf("%w: %w", ErrUnmashallingJSON, err)
+		return &Config{}, "", fmt.Errorf("%w: %w", ErrUnmashallingJSON, err)
 	}
 
-	return &conf, nil
+	return &conf, file, nil
 }
 
 // FindConfigFile checks the expected paths for a pair.json config file and returns
@@ -73,4 +77,20 @@ func FindConfigFile() (string, error) {
 	}
 
 	return "", nil
+}
+
+// Save writes the config back to the given file as tab-indented JSON.
+func Save(file string, conf *Config) error {
+	content, err := json.MarshalIndent(conf, "", "\t")
+	if err != nil {
+		return fmt.Errorf("%w: %w", ErrMarshallingJSON, err)
+	}
+
+	content = append(content, '\n')
+
+	if err := os.WriteFile(filepath.Clean(file), content, 0o600); err != nil {
+		return fmt.Errorf("%w: %w", ErrWritingConfigFile, err)
+	}
+
+	return nil
 }
