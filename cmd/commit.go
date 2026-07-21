@@ -66,7 +66,7 @@ func NewCmdCommit(conf *config.Config) *cobra.Command {
 				return err
 			}
 
-			if _, err := git.Commit(ctx, msg, conf.CommitArgs); err != nil {
+			if err := git.Commit(ctx, msg, conf.CommitArgs); err != nil {
 				return err
 			}
 
