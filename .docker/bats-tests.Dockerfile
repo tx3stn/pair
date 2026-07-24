@@ -7,7 +7,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/tx3stn/pair/cmd.Version=e2e-test" -o pair
 
-FROM bats/bats:1.13.0
+FROM bats/bats:1.14.0
 
 RUN apk add --no-cache \
 	curl \
